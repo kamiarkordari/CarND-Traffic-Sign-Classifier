@@ -33,6 +33,10 @@ The goals / steps of this project are the following:
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
+[image-data-exploration-signs]: ./output_images/data_exploration_signs.jpg "Signs"
+[image-data-exploration-num-by-label]: ./output_images/number_data_by_label.jpg "Data by Label"
+
+
 ### Dependencies
 This lab requires:
 
@@ -42,14 +46,7 @@ The lab environment can be created with CarND Term1 Starter Kit. Click [here](ht
 
 ### Dataset and Repository
 
-1. Download the data set. The classroom has a link to the data set in the "Project Instructions" content. This is a pickled dataset in which we've already resized the images to 32x32. It contains a training, validation and test set.
-2. Clone the project, which contains the Ipython notebook and the writeup template.
-```sh
-git clone https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project
-cd CarND-Traffic-Sign-Classifier-Project
-jupyter notebook Traffic_Sign_Classifier.ipynb
-```
-
+The data set can be dowloaded from here (INSERT LINK). This is a pickled dataset from MNIST in which the images are resized to 32x32. It contains a training, validation and test set.
 
 The pickled data is a dictionary with 4 key/value pairs:
 
@@ -61,15 +58,39 @@ The pickled data is a dictionary with 4 key/value pairs:
 
 
 ### Dataset Exploration
+The number of training, validation, and testing samples and image data shape and number of classes in the data set is as follows:   
+
+```Ipython
+Number of training examples = 34799
+Number of testing examples = 12630
+Image data shape = (32, 32, 3)
+Number of classes = 43
+```
+
 
 ##### Dataset Summary
 
 ##### Exploratory Visualization
+These are 8 random images from the data set with their corresponding label.
 
+![Signs][image-data-exploration-signs]
+
+Let's look at the number of data for each label in training, validation and test sets. As we can see there are not equal number of data for each label.   
+![By Label][image-data-exploration-num-by-label]
 ### Design and Test a Model Architecture
 
 ##### Preprocessing
+We preprocess the data by doing the following steps:
+
+- **Shuffle**: We shuffle the data so the ordering of the data doesn't affect how well the network trains.
+- **Convert to grayscale**: Since grayscale images only have 1 channel We convert each image to grayscale to reduce the amount of data that needs to be processed and trained.
+- **Normalize**: We normalize data so that the data has mean zero and equal variance. We used `(pixel - 128) / 128` as a quick way to approximately normalize the data.
+
+
+
+
 (INSTRUCTION: preprocessing techniques used and why these techniques were chosen)
+
 
 ##### Model Architecture
 (INSTRUCTION: The submission provides details of the characteristics and qualities of the architecture, including the type of model used, the number of layers, and the size of each layer. Visualizations emphasizing particular qualities of the architecture are encouraged.)
