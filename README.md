@@ -83,16 +83,31 @@ Let's look at the number of data for each label in training, validation and test
 We preprocess the data by doing the following steps:
 
 - **Shuffle**: We shuffle the data so the ordering of the data doesn't affect how well the network trains.
-- **Convert to grayscale**: Since grayscale images only have 1 channel We convert each image to grayscale to reduce the amount of data that needs to be processed and trained.
-- **Normalize**: We normalize data so that the data has mean zero and equal variance. We used `(pixel - 128) / 128` as a quick way to approximately normalize the data.
-
-
+- **Convert to grayscale**: Since grayscale images only have 1 channel We convert each image to grayscale to reduce the amount of data that needs to be processed and trained.This helps the network to train faster.
+- **Normalize**: We normalize data so that the data has mean zero and equal variance. We used `(pixel - 128) / 255` as a quick way to approximately normalize the data. Normalization makes convergence much faster for the training.
 
 
 (INSTRUCTION: preprocessing techniques used and why these techniques were chosen)
 
 
 ##### Model Architecture
+My model is based off the original LeNet convolution neural networks.
+
+| #   | Layer          | Input Size | Output Size | Description    |
+| ----| -------------  | -----------| ------------|:-------------:|
+| 1   | Convolution    | 32x32x1    | 28x28x6     | kernel_size=(5,5), RELU|
+| 2   | Max Pooling    | 28x28x6    | 14x14x6     | strides=(2,2)|
+| 3   | Convolution    | 14x14x6    | 10x10x16    | kernel_size=(5,5), RELU|
+| 4   | Max Pooling    | 10x10x1    | 5x5x16      | strides=(2,2)      |
+| 5   | Flatten        | 5x5x16     | 400         |    |
+| 6   | Fully Connected| 400        | 120         | RELU   |
+| 7   | Dropout | 120        | 120         | dropout=0.2   |
+| 8   | Fully Connected| 120        | 84         | RELU   |
+| 9   | Dropout | 84        | 84         | dropout=0.2   |
+| 10  | Fully Connected| 84         | 43         | RELU   |
+
+I added dropout layers because the accuracy for the validation data was much lower that the accuracy for the training data. This means the model was overfitting to the training data. Adding dropout was a good solution to solve this issue.
+
 (INSTRUCTION: The submission provides details of the characteristics and qualities of the architecture, including the type of model used, the number of layers, and the size of each layer. Visualizations emphasizing particular qualities of the architecture are encouraged.)
 
 ##### Model Training
