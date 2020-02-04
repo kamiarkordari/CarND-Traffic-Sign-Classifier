@@ -123,6 +123,10 @@ The submission describes how the model was trained by discussing what optimizer 
 
 The submission describes the approach to finding a solution. Accuracy on the validation set is 0.93 or greater.
 
+My final model resulted in a validation accuracy of [INSERT LATER], and test accuracy of [INSERT LATER].
+
+I used the LeNet network that is a well-known convolution neural network architecture that has shown high accuracy for classification and images such as handwritten numbers. The input and output size was adjusted to match to address the requirements of our traffic sign classification requirements. To enhance the model and decrease overfitting, I added to drop out layers.
+
 ### Test a Model on New Images
 ##### Acquiring New Images
 
