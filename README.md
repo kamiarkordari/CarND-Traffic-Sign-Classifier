@@ -112,6 +112,11 @@ I added dropout layers because the accuracy for the validation data was much low
 
 ##### Model Training
 
+Here is a description of how I trained the mode:
+- **Optimizer**: To train the model, I chose Adam optimizer.
+- **Batch Size**: I set the batch size to 128.
+- **Number of Epochs**: To number of epochs are set to 25 to allow the network to pass the target validation accuracy of 93%.
+
 The submission describes how the model was trained by discussing what optimizer was used, batch size, number of epochs and values for hyperparameters.
 
 ##### Solution Approach
