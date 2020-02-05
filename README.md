@@ -110,15 +110,31 @@ model = tf.keras.Sequential([
 
 Here is a description of how I trained the mode:
 - **Optimizer**: To train the model, I chose Adam optimizer. This method is more sophisticated than the other methods such as SGD and it is computationally efficient, has little memory requirement, invariant to diagonal rescaling of gradients, and is well suited for problems that are large in terms of data/parameters.
-- **Batch Size**: I set the batch size to 128.
-- **Number of Epochs**: To number of epochs are set to 25 to allow the network to pass the target validation accuracy of 93%.
+- **Batch Size**: I set the batch size to 128. Batch size tells TensorFlow how many training images to run through the network at a time. The larger the batch size the faster our model will train, but our processor may have a memory limit on how large a batch it can run.
+- **Number of Epochs**: I set the number of epochs to 25 to allow the network to pass the target validation accuracy of 93%. In general the more epochs, the better our model trains, but longer the training takes. 
 
-The final accuracy:
+Final value for parameters:
+```Python
+EPOCHS = 25
+BATCH_SIZE = 128
+LEARNING_RATE = 0.001
 ```
-Training accuracy: 98.3%
-Validation accuracy: 94.7%
-Test accuracy: 93.4%
+
+The model was trained with the following line in cell # 18 in the IPython notebook.
+```Python
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
 ```
+
+
+The final accuracy with the above parameters is as follows:
+
+| #   | Dataset      | Accuracy |
+| ----| -------------| -----------|
+| 1   | Training     | 98.3%    |
+| 2   | Validation   | 94.7%    |
+| 3   | test         | 93.4%    |
 
 
 The submission describes how the model was trained by discussing what optimizer was used, batch size, number of epochs and values for hyperparameters.
