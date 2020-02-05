@@ -113,7 +113,7 @@ I added dropout layers because the accuracy for the validation data was much low
 ##### Model Training
 
 Here is a description of how I trained the mode:
-- **Optimizer**: To train the model, I chose Adam optimizer. This method is more sophisticated than the other methods such as SGD and it is computationally efficient, has little memory requirement, invariant to diagonal rescaling of gradients, and is well suited for problems that are large in terms of data/parameters. 
+- **Optimizer**: To train the model, I chose Adam optimizer. This method is more sophisticated than the other methods such as SGD and it is computationally efficient, has little memory requirement, invariant to diagonal rescaling of gradients, and is well suited for problems that are large in terms of data/parameters.
 - **Batch Size**: I set the batch size to 128.
 - **Number of Epochs**: To number of epochs are set to 25 to allow the network to pass the target validation accuracy of 93%.
 
@@ -164,6 +164,8 @@ Looking at performance of individual sign types can help guide how to better aug
 
 ##### VISUALIZE LAYERS OF THE NEURAL NETWORK
 (BONUS) See Step 4 of the Iptyon notebook for details about how to do this.
+
+Try experimenting with a similar test to show that your trained network's weights are looking for interesting features, whether it's looking at differences in feature maps from images with or without a sign, or even what feature maps look like in a trained network vs a completely untrained one on the same sign image.
 
 ### Strategies to Improve Classification Model
 - experiment with different network architectures, or just change the dimensions of the LeNet layers
