@@ -1,4 +1,4 @@
-## Project: Build a Traffic Sign Recognition Program
+Â## Project: Build a Traffic Sign Recognition Program
 [![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
 
 Overview
@@ -71,7 +71,7 @@ Number of classes = 43
 ##### Dataset Summary
 
 ##### Exploratory Visualization
-These are 8 random images from the data set with their corresponding label.
+Below we can see one sample image for each of the classes with the name of the class written on top of the image.
 
 ![Signs][image-data-exploration-signs]
 
@@ -101,9 +101,9 @@ My model is based off the original LeNet convolution neural networks.
 | 4   | Max Pooling    | 10x10x1    | 5x5x16      | strides=(2,2)      |
 | 5   | Flatten        | 5x5x16     | 400         |    |
 | 6   | Fully Connected| 400        | 120         | RELU   |
-| 7   | Dropout | 120        | 120         | dropout=0.2   |
+| 7   | Dropout | 120        | 120         | dropout=0.3   |
 | 8   | Fully Connected| 120        | 84         | RELU   |
-| 9   | Dropout | 84        | 84         | dropout=0.2   |
+| 9   | Dropout | 84        | 84         | dropout=0.3   |
 | 10  | Fully Connected| 84         | 43         | RELU   |
 
 I added dropout layers because the accuracy for the validation data was much lower that the accuracy for the training data. This means the model was overfitting to the training data. Adding dropout was a good solution to solve this issue.
@@ -113,9 +113,17 @@ I added dropout layers because the accuracy for the validation data was much low
 ##### Model Training
 
 Here is a description of how I trained the mode:
-- **Optimizer**: To train the model, I chose Adam optimizer.
+- **Optimizer**: To train the model, I chose Adam optimizer. This method is more sophisticated than the other methods such as SGD and it is computationally efficient, has little memory requirement, invariant to diagonal rescaling of gradients, and is well suited for problems that are large in terms of data/parameters. 
 - **Batch Size**: I set the batch size to 128.
 - **Number of Epochs**: To number of epochs are set to 25 to allow the network to pass the target validation accuracy of 93%.
+
+The final accuracy:
+```
+Training accuracy: 98.3%
+Validation accuracy: 94.7%
+Test accuracy: 93.4%
+```
+
 
 The submission describes how the model was trained by discussing what optimizer was used, batch size, number of epochs and values for hyperparameters.
 
