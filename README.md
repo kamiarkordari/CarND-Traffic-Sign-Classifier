@@ -1,27 +1,11 @@
-Â## Project: Build a Traffic Sign Recognition Program
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
+Build a Traffic Sign Recognition Program
+Udacity - Self-Driving Car NanoDegree Project
 
 Overview
 ---
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, you will then try out your model on images of German traffic signs that you find on the web.
+In this project, we will use deep neural networks and convolutional neural networks to classify traffic signs. We will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, we will then try out your model on images of German traffic signs that we find on the web.
 
-We have included an Ipython notebook that contains further instructions
-and starter code. Be sure to download the [Ipython notebook](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb).
-
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting three files:
-* the Ipython notebook with the code
-* the code exported as an html file
-* a writeup report either as a markdown or pdf file
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/481/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used in each step (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :).
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
+The code is in an Ipython notebook names `Traffic_Sign_Classifier.ipynb`.
 
 The Project
 ---
@@ -37,27 +21,21 @@ The goals / steps of this project are the following:
 [image-data-exploration-num-by-label]: ./output_images/number_data_by_label.jpg "Data by Label"
 
 
-### Dependencies
-This lab requires:
-
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
-
-The lab environment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
-
 ### Dataset and Repository
 
-The data set can be dowloaded from here (INSERT LINK). This is a pickled dataset from MNIST in which the images are resized to 32x32. It contains a training, validation and test set.
+The data set can be dowloaded from here ([download the dataset](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic-signs-data.zip)). This is a pickled dataset from MNIST in which the images are resized to 32x32. It contains a training, validation and test set.
 
 The pickled data is a dictionary with 4 key/value pairs:
 
 - `features` is a 4D array containing raw pixel data of the traffic sign images, (num examples, width, height, channels).
 - `labels` is a 1D array containing the label/class id of the traffic sign. The file signnames.csv contains id -> name mappings for each id.
 - `sizes` is a list containing tuples, (width, height) representing the original width and height the image.
-- `coords` is a list containing tuples, (x1, y1, x2, y2) representing coordinates of a bounding box around the sign in the image. THESE COORDINATES ASSUME THE ORIGINAL IMAGE. THE PICKLED DATA CONTAINS RESIZED VERSIONS (32 by 32) OF THESE IMAGES
+- `coords` is a list containing tuples, (x1, y1, x2, y2) representing coordinates of a bounding box around the sign in the image. These coordinates assume the original image. The pickled data contains resized versions (32 by 32 of these images).
 
 
 
 ### Dataset Exploration
+##### Dataset Summary
 The number of training, validation, and testing samples and image data shape and number of classes in the data set is as follows:   
 
 ```Ipython
@@ -67,28 +45,33 @@ Image data shape = (32, 32, 3)
 Number of classes = 43
 ```
 
-
-##### Dataset Summary
-
 ##### Exploratory Visualization
-Below we can see one sample image for each of the classes with the name of the class written on top of the image.
+Below we can see one sample image for each of the 43 classes with the name of the class written on top of the image.
 
 ![Signs][image-data-exploration-signs]
 
 Let's look at the number of data for each label in training, validation and test sets. As we can see there are not equal number of data for each label.   
 ![By Label][image-data-exploration-num-by-label]
-### Design and Test a Model Architecture
 
+
+### Design and Test a Model Architecture
 ##### Preprocessing
 We preprocess the data by doing the following steps:
 
 - **Shuffle**: We shuffle the data so the ordering of the data doesn't affect how well the network trains.
-- **Convert to grayscale**: Since grayscale images only have 1 channel We convert each image to grayscale to reduce the amount of data that needs to be processed and trained.This helps the network to train faster.
+``` Python
+X_train, y_train = shuffle(X_train, y_train)
+```
+
+- **Convert to grayscale**: Since grayscale images only have one channel we convert each image to grayscale to reduce the amount of data that needs to be processed and trained. We may loose some color information, but this can help the network to train faster.
+``` Python
+gray_image = cv2.cvtColor(X_train[i,:,:,:], cv2.COLOR_RGB2GRAY)
+```
+
 - **Normalize**: We normalize data so that the data has mean zero and equal variance. We used `(pixel - 128) / 255` as a quick way to approximately normalize the data. Normalization makes convergence much faster for the training.
-
-
-(INSTRUCTION: preprocessing techniques used and why these techniques were chosen)
-
+``` Python
+XX_train[i,:,:,0] = gray_image / 255.0 - 0.5
+```
 
 ##### Model Architecture
 My model is based off the original LeNet convolution neural networks.
@@ -106,9 +89,22 @@ My model is based off the original LeNet convolution neural networks.
 | 9   | Dropout | 84        | 84         | dropout=0.3   |
 | 10  | Fully Connected| 84         | 43         | RELU   |
 
-I added dropout layers because the accuracy for the validation data was much lower that the accuracy for the training data. This means the model was overfitting to the training data. Adding dropout was a good solution to solve this issue.
 
-(INSTRUCTION: The submission provides details of the characteristics and qualities of the architecture, including the type of model used, the number of layers, and the size of each layer. Visualizations emphasizing particular qualities of the architecture are encouraged.)
+Here is how the model is defined in the cell # 16 in the Ipython notebook:
+```Python
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(filters=6, kernel_size=(5, 5), activation='relu', input_shape=(32, 32, 1)),
+    tf.keras.layers.MaxPool2D(strides=(2, 2)),
+    tf.keras.layers.Conv2D(filters=16, kernel_size=(5, 5), activation='relu'),
+    tf.keras.layers.MaxPool2D(strides=(2, 2)),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(units=120, activation='relu'),
+    tf.keras.layers.Dropout(0.3),
+    tf.keras.layers.Dense(units=84, activation='relu'),
+    tf.keras.layers.Dropout(0.3),
+    tf.keras.layers.Dense(units=43, activation = 'softmax')
+])
+```
 
 ##### Model Training
 
@@ -130,6 +126,15 @@ The submission describes how the model was trained by discussing what optimizer 
 ##### Solution Approach
 
 The submission describes the approach to finding a solution. Accuracy on the validation set is 0.93 or greater.
+
+There are various aspects to consider when thinking about this problem:
+- Neural network architecture (is the network over or underfitting?)
+- Play around preprocessing techniques (normalization, rgb to grayscale, etc)
+- Number of examples per label (some have more than others).
+- Generate fake data.
+
+I added dropout layers because the accuracy for the validation data was lower that the accuracy for the training data. This means the model was overfitting to the training data. Adding dropout was a good solution to solve this issue.
+
 
 My final model resulted in a validation accuracy of [INSERT LATER], and test accuracy of [INSERT LATER].
 
@@ -165,7 +170,11 @@ Looking at performance of individual sign types can help guide how to better aug
 ##### VISUALIZE LAYERS OF THE NEURAL NETWORK
 (BONUS) See Step 4 of the Iptyon notebook for details about how to do this.
 
+[EDIT]
 Try experimenting with a similar test to show that your trained network's weights are looking for interesting features, whether it's looking at differences in feature maps from images with or without a sign, or even what feature maps look like in a trained network vs a completely untrained one on the same sign image.
+
+[EDIT]
+their network's inner weights had high activations to road boundary lines by comparing feature maps from an image with a clear path to one without.
 
 ### Strategies to Improve Classification Model
 - experiment with different network architectures, or just change the dimensions of the LeNet layers
