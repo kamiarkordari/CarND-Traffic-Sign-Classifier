@@ -111,7 +111,7 @@ model = tf.keras.Sequential([
 Here is a description of how I trained the mode:
 - **Optimizer**: To train the model, I chose Adam optimizer. This method is more sophisticated than the other methods such as SGD and it is computationally efficient, has little memory requirement, invariant to diagonal rescaling of gradients, and is well suited for problems that are large in terms of data/parameters.
 - **Batch Size**: I set the batch size to 128. Batch size tells TensorFlow how many training images to run through the network at a time. The larger the batch size the faster our model will train, but our processor may have a memory limit on how large a batch it can run.
-- **Number of Epochs**: I set the number of epochs to 25 to allow the network to pass the target validation accuracy of 93%. In general the more epochs, the better our model trains, but longer the training takes. 
+- **Number of Epochs**: I set the number of epochs to 25 to allow the network to pass the target validation accuracy of 93%. In general the more epochs, the better our model trains, but longer the training takes.
 
 Final value for parameters:
 ```Python
@@ -141,20 +141,13 @@ The submission describes how the model was trained by discussing what optimizer 
 
 ##### Solution Approach
 
-The submission describes the approach to finding a solution. Accuracy on the validation set is 0.93 or greater.
+My approach to solve the traffic sign classification was to use LeNet architecture that has proven to be a highly accurate solution to these type of image classification problems and apply adjustments to improve the accuracy of the model.  
 
-There are various aspects to consider when thinking about this problem:
-- Neural network architecture (is the network over or underfitting?)
-- Play around preprocessing techniques (normalization, rgb to grayscale, etc)
-- Number of examples per label (some have more than others).
-- Generate fake data.
-
-I added dropout layers because the accuracy for the validation data was lower that the accuracy for the training data. This means the model was overfitting to the training data. Adding dropout was a good solution to solve this issue.
-
-
-My final model resulted in a validation accuracy of [INSERT LATER], and test accuracy of [INSERT LATER].
-
-I used the LeNet network that is a well-known convolution neural network architecture that has shown high accuracy for classification and images such as handwritten numbers. The input and output size was adjusted to match to address the requirements of our traffic sign classification requirements. To enhance the model and decrease overfitting, I added to drop out layers.
+There are various aspects to consider when to increase the accuracy of our model:
+- Neural network architecture: The validation accuracy was about 5% lower than the training accuracy. This suggests that the model if overfitting to the training data. To address this, I added to dropout layers after the fully connected layers. This improved the validation accuracy.
+- Improve preprocessing techniques: My preprocessing includes normalization, converting images from rgb to grayscale, and shuffling.
+- Number of examples per label: Since some classes have way more samples than others, this may result in model bias towards classes with higher samples. We can put a cap on the max number of samples we use from each class for training the model. I didn't apply this in the current version of the code.   
+- Generate fake data: To make the model more general we can increase the size of the training set by generating multiple images from each image by applying zooming, shifting, scaling, or changing brightness. I didn't apply this in the current version of the code.   
 
 ### Test a Model on New Images
 ##### Acquiring New Images
