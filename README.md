@@ -19,7 +19,8 @@ The goals / steps of this project are the following:
 
 [image-data-exploration-signs]: ./output_images/data_exploration_signs.jpg "Signs"
 [image-data-exploration-num-by-label]: ./output_images/number_data_by_label.jpg "Data by Label"
-
+[image-five-new-test]: ./output_images/five_new_images.jpg "Five New Test Images"
+[image-new-test-result]: ./output_images/test_new_images.jpg "New Test Results"
 
 ### Dataset and Repository
 
@@ -120,21 +121,34 @@ BATCH_SIZE = 128
 LEARNING_RATE = 0.001
 ```
 
-The model was trained with the following line in cell # 18 in the IPython notebook.
+The model was built with the following line in cell # 18 in the IPython notebook.
 ```Python
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 ```
 
+We train our model by fitting the data in batches.
+```Python
+history = model.fit(X_train, y_train_one_hot,
+                    epochs=EPOCHS,
+                    batch_size=BATCH_SIZE,
+                    validation_data=(X_valid, y_valid_one_hot))
+```
+
+The test accuracy is calculated with this line of code:
+
+```Python
+metrics = model.evaluate(X_test, y_test_one_hot, verbose=0)
+```
 
 The final accuracy with the above parameters is as follows:
 
-| #   | Dataset      | Accuracy |
-| ----| -------------| -----------|
-| 1   | Training     | 98.3%    |
-| 2   | Validation   | 94.7%    |
-| 3   | test         | 93.4%    |
+| Dataset      | Accuracy |
+| -------------| ---------|
+| Training     | 98.3%    |
+| Validation   | 94.7%    |
+| test         | 93.4%    |
 
 
 The submission describes how the model was trained by discussing what optimizer was used, batch size, number of epochs and values for hyperparameters.
@@ -145,23 +159,62 @@ My approach to solve the traffic sign classification was to use LeNet architectu
 
 There are various aspects to consider when to increase the accuracy of our model:
 - Neural network architecture: The validation accuracy was about 5% lower than the training accuracy. This suggests that the model if overfitting to the training data. To address this, I added to dropout layers after the fully connected layers. This improved the validation accuracy.
-- Improve preprocessing techniques: My preprocessing includes normalization, converting images from rgb to grayscale, and shuffling.
+- Improve preprocessing techniques: My preprocessing includes normalization, converting images from RGB to grayscale, and shuffling.
 - Number of examples per label: Since some classes have way more samples than others, this may result in model bias towards classes with higher samples. We can put a cap on the max number of samples we use from each class for training the model. I didn't apply this in the current version of the code.   
 - Generate fake data: To make the model more general we can increase the size of the training set by generating multiple images from each image by applying zooming, shifting, scaling, or changing brightness. I didn't apply this in the current version of the code.   
 
 ### Test a Model on New Images
 ##### Acquiring New Images
 
-The submission includes five new German Traffic signs found on the web, and the images are visualized. Discussion is made as to particular qualities of the images or traffic signs in the images that are of interest, such as whether they would be difficult for the model to classify.
+I tested the model with five new German Traffic signs that I found on the web. The two images that can be difficult to classify are the yield sign that is taken at an angle and the traffic signal sign that has a background of a building in it.
+![Five New Test Images][image-five-new-test]
 
 ##### Performance on New Images
 
-The submission documents the performance of the model when tested on the captured images. The performance on the new images is compared to the accuracy results of the test set.
+The performance of the model when tested on the captured images is 80% (4 correct classifications out of 5 images). The performance on the new images is less than the accuracy results of the test set. Since we are only testing on a very small set of images, this lower percentage number is not a concern.
 
+![New Test Results][image-new-test-result]
 
 ##### Model Certainty - Softmax Probabilities
 
-The top five softmax probabilities of the predictions on the captured images are outputted. The submission discusses how certain or uncertain the model is of its predictions.
+For each of the new images, we print out the model's softmax probabilities to show the certainty of the model's predictions. We limit the output to the top 5 probabilities for each image.
+
+We use `tf.nn.top_k` to find the top k predictions for each image. `tf.nn.top_k` returns the values and indices (class ids) of the top k predictions.
+
+
+Here are the top five classes for the first image that belongs to 'Children crossing' class.
+
+| Class      | Softmax Probability |
+| -------------| ---------|
+| Children crossing     | 0.99883944    |
+| Dangerous curve to the right   | 0.0008362445    |
+| Right-of-way at the next intersection         | 0.00014585092    |
+| Pedestrians         | 0.00014334072    |
+| Bicycles crossing         | 3.0985655e-05    |
+
+
+Here are the top five classes for the image that was misclassified and it belongs to 'Traffic signals' class.
+
+| Class      | Softmax Probability |
+| -------------| ---------|
+| General caution | 0.8338054|
+| Traffic signals | 0.16617842|
+| Road narrows on the right | 1.5583024e-05
+| Pedestrians | 5.582917e-07 |
+| Dangerous curve to the right | 1.6554702e-08|
+
+I used an image that is not a traffic sign to see how the model classifies it. I used a puppy image and I got these results:
+
+| Class      | Softmax Probability |
+| -------------| ---------|
+| Speed limit (30km/h) | 0.3588836|
+| Keep right |  0.3360224|
+| Speed limit (20km/h) |  0.28869176|
+| End of all speed and passing limits |  0.015717417|
+| Speed limit (120km/h) |  0.00043934592|
+
+As we can see the top three classes have similar probabilities and the model is not confident in its prediction.
+
 
 ##### AUGMENT THE TRAINING DATA
 (BONUS) Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
