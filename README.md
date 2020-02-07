@@ -17,10 +17,18 @@ The goals / steps of this project are the following:
 * Analyze the softmax probabilities of the new images
 * Summarize the results with a written report
 
+[image-classes]: ./output_images/classes.jpg "All Classes"
 [image-data-exploration-signs]: ./output_images/data_exploration_signs.jpg "Signs"
 [image-data-exploration-num-by-label]: ./output_images/number_data_by_label.jpg "Data by Label"
+[image-model]: ./output_images/model_summary.jpg "All Classes"
 [image-five-new-test]: ./output_images/five_new_images.jpg "Five New Test Images"
 [image-new-test-result]: ./output_images/test_new_images.jpg "New Test Results"
+[image-visualize-layers-example1]: ./output_images/first_layer_out_children.jpg "Layer Visualization 1"
+[image-visualize-layers-example2]: ./output_images/first_layer_out_keep_right.jpg "Layer Visualization 2"
+[image-visualize-layers-example3]: ./output_images/first_layer_out_slippery.jpg "Layer Visualization 3"
+[image-visualize-layers-example4]: ./output_images/first_layer_out_yield.jpg "Layer Visualization 4"
+[image-visualize-layers-example5]: ./output_images/first_layer_out_signals.jpg "Layer Visualization 5"
+[image-visualize-layers-example6]: ./output_images/first_layer_out_not_a_sign.jpg "Layer Visualization 6"
 
 ### Dataset and Repository
 
@@ -54,6 +62,8 @@ Below we can see one sample image for each of the 43 classes with the name of th
 Let's look at the number of data for each label in training, validation and test sets. As we can see there are not equal number of data for each label.   
 ![By Label][image-data-exploration-num-by-label]
 
+Here is the description for each class:
+![Classes][image-classes]
 
 ### Design and Test a Model Architecture
 ##### Preprocessing
@@ -77,21 +87,10 @@ XX_train[i,:,:,0] = gray_image / 255.0 - 0.5
 ##### Model Architecture
 My model is based off the original LeNet convolution neural networks.
 
-| #   | Layer          | Input Size | Output Size | Description    |
-| ----| -------------  | -----------| ------------|:-------------:|
-| 1   | Convolution    | 32x32x1    | 28x28x6     | kernel_size=(5,5), RELU|
-| 2   | Max Pooling    | 28x28x6    | 14x14x6     | strides=(2,2)|
-| 3   | Convolution    | 14x14x6    | 10x10x16    | kernel_size=(5,5), RELU|
-| 4   | Max Pooling    | 10x10x1    | 5x5x16      | strides=(2,2)      |
-| 5   | Flatten        | 5x5x16     | 400         |    |
-| 6   | Fully Connected| 400        | 120         | RELU   |
-| 7   | Dropout | 120        | 120         | dropout=0.3   |
-| 8   | Fully Connected| 120        | 84         | RELU   |
-| 9   | Dropout | 84        | 84         | dropout=0.3   |
-| 10  | Fully Connected| 84         | 43         | RELU   |
+![Model Summary][image-model]
 
 
-Here is how the model is defined in the cell # 16 in the Ipython notebook:
+Here is how the model is defined in the cell #10 in the Ipython notebook:
 ```Python
 model = tf.keras.Sequential([
     tf.keras.layers.Conv2D(filters=6, kernel_size=(5, 5), activation='relu', input_shape=(32, 32, 1)),
@@ -121,14 +120,14 @@ BATCH_SIZE = 128
 LEARNING_RATE = 0.001
 ```
 
-The model was built with the following line in cell # 18 in the IPython notebook.
+The model was built in cell #12 in the IPython notebook.
 ```Python
 model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
               loss='categorical_crossentropy',
               metrics=['accuracy'])
 ```
 
-We train our model by fitting the data in batches.
+We train our model by fitting the data in batches (cell #13).
 ```Python
 history = model.fit(X_train, y_train_one_hot,
                     epochs=EPOCHS,
@@ -136,7 +135,7 @@ history = model.fit(X_train, y_train_one_hot,
                     validation_data=(X_valid, y_valid_one_hot))
 ```
 
-The test accuracy is calculated with this line of code:
+Then the test accuracy is calculated (cell #15):
 
 ```Python
 metrics = model.evaluate(X_test, y_test_one_hot, verbose=0)
@@ -173,7 +172,18 @@ I tested the model with five new German Traffic signs that I found on the web. T
 
 The performance of the model when tested on the captured images is 80% (4 correct classifications out of 5 images). The performance on the new images is less than the accuracy results of the test set. Since we are only testing on a very small set of images, this lower percentage number is not a concern.
 
+Here are the results of the prediction:
+
+| Image      | Prediction |
+| -------------| ---------|
+| Children crossing     |   Children crossing |
+| Keep right     |   Keep right |
+| Slippery road     |   Slippery road  |
+| Yield     |   Yield  |
+| Traffic signals     |   General caution  |
+
 ![New Test Results][image-new-test-result]
+
 
 ##### Model Certainty - Softmax Probabilities
 
@@ -216,31 +226,29 @@ I used an image that is not a traffic sign to see how the model classifies it. I
 As we can see the top three classes have similar probabilities and the model is not confident in its prediction.
 
 
-##### AUGMENT THE TRAINING DATA
-(BONUS) Augmenting the training set might help improve model performance. Common data augmentation techniques include rotation, translation, zoom, flips, and/or color perturbation. These techniques can be used individually or combined.
+##### Visualize Layers of the Neural Network
+While neural networks can be a great learning device they are often referred to as a black box. We can understand what the weights of a neural network look like better by plotting their feature maps. After successfully training the neural network we can see what it's feature maps look like by plotting the output of the network's weight layers in response to a test stimuli image. From these plotted feature maps, it's possible to see what characteristics of an image the network finds interesting. For a sign, the inner network feature maps react with high activation to the sign's boundary outline or to the contrast in the sign's painted symbol.
 
-##### ANALYZE NEW IMAGE PERFORMANCE IN MORE DETAIL
-(BONUS) Calculating the accuracy on these five German traffic sign images found on the web might not give a comprehensive overview of how well the model is performing. Consider ways to do a more detailed analysis of model performance by looking at predictions in more detail. For example, calculate the precision and recall for each traffic sign type from the test set and then compare performance on these five new images..
+The network's inner weights has high activations to traffic signs by comparing feature maps from an image with a clear traffic sign to one without.
 
-If one of the new images is a stop sign but was predicted to be a bumpy road sign, then we might expect a low recall for stop signs. In other words, the model has trouble predicting on stop signs. If one of the new images is a 100 km/h sign but was predicted to be a stop sign, we might expect precision to be low for stop signs. In other words, if the model says something is a stop sign, we're not very sure that it really is a stop sign.
+First layer output for 'Children Crossing' sign:
+![Layer Visualization][image-visualize-layers-example1]
+First layer output for 'Keep Right' sign:
+![Layer Visualization][image-visualize-layers-example2]
+First layer output for 'Slippery Road' sign:
+![Layer Visualization][image-visualize-layers-example3]
+First layer output for 'Yield' sign:
+![Layer Visualization][image-visualize-layers-example4]
+First layer output for 'Traffic Signals' sign:
+![Layer Visualization][image-visualize-layers-example5]
+First layer output for a non-sign image (image of a puppy):
+![Layer Visualization][image-visualize-layers-example6]
 
-Looking at performance of individual sign types can help guide how to better augment the data set or how to fine tune the model.
-
-##### CREATE VISUALIZATIONS OF THE SOFTMAX PROBABILITIES
-(BONUS) For each of the five new images, create a graphic visualization of the soft-max probabilities. Bar charts might work well.
-
-##### VISUALIZE LAYERS OF THE NEURAL NETWORK
-(BONUS) See Step 4 of the Iptyon notebook for details about how to do this.
-
-[EDIT]
-Try experimenting with a similar test to show that your trained network's weights are looking for interesting features, whether it's looking at differences in feature maps from images with or without a sign, or even what feature maps look like in a trained network vs a completely untrained one on the same sign image.
-
-[EDIT]
-their network's inner weights had high activations to road boundary lines by comparing feature maps from an image with a clear path to one without.
 
 ### Strategies to Improve Classification Model
-- experiment with different network architectures, or just change the dimensions of the LeNet layers
-- add regularization features like drop out or L2 regularization to make sure the network doesn't overfit the training data
-- tune the hyperparameters
-- improve the data pre-processing with steps like normalization and setting a zero mean
-- augment the training data by rotating or shifting images or by changing colors
+Here is a list of approaches to improve our model:
+- experiment with different network architectures
+- experiment with other regularization features like L2 regularization to make sure the network doesn't overfit the training data
+- train the model with a training set that has the same number of data points for each class.  
+- augment the training data by techniques such as rotation, translation, zoom, flips, and/or color perturbation
+- calculate the classification metrics for each traffic sign type to decide how to augment for each class in the training set
